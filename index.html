@@ -1,364 +1,138 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>flowersliliee</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lily Flowers</title>
 <style>
-  :root{
-    --sky1:#0b1324;
-    --sky2:#000;
-    --text:#fffbe6;
-  }
-  html,body{height:100%;margin:0}
-  body{
-    background:radial-gradient(ellipse at 50% 85%, var(--sky1) 0%, var(--sky2) 70%);
-    overflow:hidden;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-    color:var(--text);
-  }
-  canvas{display:block; width:100vw; height:100vh;}
-  h1{
-    position:fixed; left:0; right:0; bottom:18px; margin:0;
-    text-align:center; font-weight:600; letter-spacing:.3px;
-    text-shadow:0 0 10px #fff8;
-    font-size:clamp(14px, 2.6vw, 22px);
-    padding:0 16px;
-  }
-  /* tombol mute sederhana (opsional) */
-  .mute{
-    position:fixed; right:10px; bottom:10px; z-index:10;
-    font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid #fff3;
-    color:#fff; background:#0006; backdrop-filter:blur(6px); cursor:pointer;
-  }
+    body {
+        margin: 0;
+        background: radial-gradient(ellipse at bottom, #0b0c10 0%, #000000 100%);
+        overflow: hidden;
+        color: white;
+        text-align: center;
+        font-family: 'Segoe Script', cursive;
+    }
+
+    svg {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Animasi kelopak bergerak */
+    .petal {
+        transform-origin: bottom center;
+        animation: sway 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes sway {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(3deg); }
+    }
+
+    /* Efek bintang berkelip */
+    .star {
+        position: absolute;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 2s infinite alternate;
+    }
+    @keyframes twinkle {
+        0% { opacity: 0.3; }
+        100% { opacity: 1; }
+    }
+
+    /* Efek kunang-kunang */
+    .firefly {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: yellow;
+        border-radius: 50%;
+        animation: fly 6s ease-in-out infinite;
+        box-shadow: 0 0 6px yellow;
+    }
+    @keyframes fly {
+        0% { transform: translate(0,0); opacity: 0.5; }
+        50% { transform: translate(100px,-150px); opacity: 1; }
+        100% { transform: translate(-50px,-300px); opacity: 0.5; }
+    }
+
+    h1 {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        font-size: 1.5rem;
+        color: #fff;
+        text-shadow: 0 0 10px pink;
+    }
 </style>
 </head>
 <body>
-<canvas id="scene"></canvas>
-<h1>This is Lily flowers to birthday girl, Deya, good night and have a nice dream ✨</h1>
 
-<audio id="bgm" autoplay loop>
-  <source src="lily.mp3" type="audio/mpeg" />
+<h1>This is Lily flowers to my birthday girl,<br>Good night and have a nice dream</h1>
+
+<svg width="400" height="600" viewBox="0 0 400 600">
+    <!-- Tangkai utama -->
+    <path d="M200 600 C200 500, 200 300, 200 200" stroke="green" stroke-width="8" fill="none"/>
+
+    <!-- Cabang kiri -->
+    <path d="M200 300 C150 250, 140 200, 150 150" stroke="green" stroke-width="4" fill="none"/>
+
+    <!-- Cabang kanan -->
+    <path d="M200 300 C250 250, 260 200, 250 150" stroke="green" stroke-width="4" fill="none"/>
+
+    <!-- Bunga kiri -->
+    <g transform="translate(150,150)">
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(60)"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(120)"/>
+        <circle cx="0" cy="0" r="6" fill="yellow"/>
+    </g>
+
+    <!-- Bunga tengah -->
+    <g transform="translate(200,200)">
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(60)"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(120)"/>
+        <circle cx="0" cy="0" r="6" fill="yellow"/>
+    </g>
+
+    <!-- Bunga kanan -->
+    <g transform="translate(250,150)">
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(60)"/>
+        <ellipse class="petal" cx="0" cy="0" rx="20" ry="50" fill="white" transform="rotate(120)"/>
+        <circle cx="0" cy="0" r="6" fill="yellow"/>
+    </g>
+</svg>
+
+<audio autoplay loop>
+    <source src="romantic.mp3" type="audio/mpeg">
 </audio>
-<button class="mute" id="muteBtn">🔊</button>
 
 <script>
-(() => {
-  const canvas = document.getElementById('scene');
-  const ctx = canvas.getContext('2d');
-  let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-
-  function resize(){
-    const {innerWidth:w, innerHeight:h} = window;
-    canvas.width  = Math.floor(w * dpr);
-    canvas.height = Math.floor(h * dpr);
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0); // draw in CSS pixels
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  // ===== STARRY SKY & FIREFLIES =====
-  const stars = [];
-  const starCount = Math.floor(Math.max(220, (innerWidth*innerHeight)/9000));
-  for(let i=0;i<starCount;i++){
-    stars.push({
-      x: Math.random()*innerWidth,
-      y: Math.random()*innerHeight*0.75,
-      r: Math.random()*1.6 + 0.2,
-      a: Math.random(),
-      v: (Math.random()*0.02+0.004) * (Math.random()<.5?-1:1)
-    });
-  }
-
-  const fireflies = [];
-  const flyCount = Math.floor(Math.max(60, innerWidth/18));
-  for(let i=0;i<flyCount;i++){
-    fireflies.push({
-      x: Math.random()*innerWidth,
-      y: Math.random()*innerHeight,
-      vx:(Math.random()-0.5)*0.6,
-      vy:(Math.random()-0.5)*0.6,
-      r: 1.2 + Math.random()*1.8,
-      t: Math.random()*Math.PI*2
-    });
-  }
-
-  function drawStars(){
-    ctx.save();
-    for(const s of stars){
-      s.a += s.v;
-      if(s.a<0){s.a=0; s.v*=-1}
-      if(s.a>1){s.a=1; s.v*=-1}
-      ctx.globalAlpha = s.a;
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function drawFireflies(){
-    ctx.save();
-    for(const f of fireflies){
-      f.t += 0.03;
-      f.x += f.vx + Math.cos(f.t)*0.15;
-      f.y += f.vy + Math.sin(f.t*0.7)*0.1;
-      if(f.x<-10) f.x=innerWidth+10;
-      if(f.x>innerWidth+10) f.x=-10;
-      if(f.y<-10) f.y=innerHeight+10;
-      if(f.y>innerHeight+10) f.y=-10;
-
-      const glow = ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,6+f.r*4);
-      glow.addColorStop(0, 'rgba(255,255,170,.9)');
-      glow.addColorStop(0.6, 'rgba(255,255,170,.2)');
-      glow.addColorStop(1, 'rgba(255,255,170,0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(f.x,f.y,6+f.r*4,0,Math.PI*2);
-      ctx.fill();
-
-      ctx.globalAlpha = 0.6 + 0.4*Math.sin(f.t*3);
-      ctx.beginPath();
-      ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
-      ctx.fillStyle = '#fffacd';
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-    ctx.restore();
-  }
-
-  // ===== LILY =====
-  function drawLilyBouquet(cx, cy, scale=1){
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(scale, scale);
-
-    // --- BASE SHEATH (MENYATU DI BAWAH) ---
-    // Bentuk selongsong pangkal yang menyatu, lalu mengecil ke "node" pemisah
-    const baseW = 26, topW = 12, sheathH = 120;
-    const grad = ctx.createLinearGradient(0,0,0,-sheathH);
-    grad.addColorStop(0, '#215a33');
-    grad.addColorStop(0.5, '#2e7a45');
-    grad.addColorStop(1, '#3fa35b');
-    ctx.beginPath();
-    ctx.moveTo(-baseW, 0);
-    ctx.bezierCurveTo(-baseW*0.9, -sheathH*0.35, -topW*1.1, -sheathH*0.75, -topW, -sheathH);
-    ctx.lineTo( topW, -sheathH);
-    ctx.bezierCurveTo( topW*1.1, -sheathH*0.75, baseW*0.9, -sheathH*0.35, baseW, 0);
-    ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // highlight vertikal halus
-    ctx.globalAlpha = 0.25;
-    ctx.beginPath();
-    ctx.moveTo(4, -sheathH);
-    ctx.bezierCurveTo(8, -sheathH*0.7, 10, -sheathH*0.35, 8, 0);
-    ctx.lineWidth = 4; ctx.strokeStyle = '#b9f6ca';
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-
-    // Titik node tempat percabangan
-    const nodeY = -sheathH;
-
-    // --- TIGA TANGKAI (BERCAGANG PERLAHAN) ---
-    // Semua mulai dari nodeY (menyatu dulu), kemudian melebar
-    ctx.lineCap = 'round';
-    const stemColor = '#3fa35b';
-    const stemHL    = '#a8e6b1';
-
-    function strokeStem(pathFn, lw){
-      ctx.save();
-      ctx.lineWidth = lw;
-      ctx.strokeStyle = stemColor;
-      pathFn(); ctx.stroke();
-      // highlight di sisi kanan
-      ctx.globalAlpha = .55;
-      ctx.lineWidth = Math.max(1, lw*0.45);
-      ctx.strokeStyle = stemHL;
-      pathFn(); ctx.stroke();
-      ctx.restore();
+    // Bintang
+    for (let i = 0; i < 50; i++) {
+        let star = document.createElement("div");
+        star.className = "star";
+        star.style.width = star.style.height = Math.random() * 2 + "px";
+        star.style.top = Math.random() * window.innerHeight + "px";
+        star.style.left = Math.random() * window.innerWidth + "px";
+        document.body.appendChild(star);
     }
 
-    // Kiri (melebar halus)
-    const leftEnd = {x:-95, y: nodeY-120};
-    const leftCtrl1 = {x:-25, y: nodeY-20};
-    const leftCtrl2 = {x:-70, y: nodeY-70};
-    const leftPath = () => {
-      ctx.beginPath();
-      ctx.moveTo(0, nodeY);
-      ctx.bezierCurveTo(leftCtrl1.x,leftCtrl1.y, leftCtrl2.x,leftCtrl2.y, leftEnd.x,leftEnd.y);
-    };
-    strokeStem(leftPath, 8);
-
-    // Tengah (sedikit S-curve)
-    const midEnd = {x:0, y: nodeY-150};
-    const midCtrl1 = {x:10, y: nodeY-40};
-    const midCtrl2 = {x:-10, y: nodeY-90};
-    const midPath = () => {
-      ctx.beginPath();
-      ctx.moveTo(0, nodeY);
-      ctx.bezierCurveTo(midCtrl1.x,midCtrl1.y, midCtrl2.x,midCtrl2.y, midEnd.x,midEnd.y);
-    };
-    strokeStem(midPath, 8);
-
-    // Kanan (simetris kiri)
-    const rightEnd = {x:95, y: nodeY-120};
-    const rightCtrl1 = {x:25, y: nodeY-20};
-    const rightCtrl2 = {x:70, y: nodeY-70};
-    const rightPath = () => {
-      ctx.beginPath();
-      ctx.moveTo(0, nodeY);
-      ctx.bezierCurveTo(rightCtrl1.x,rightCtrl1.y, rightCtrl2.x,rightCtrl2.y, rightEnd.x,rightEnd.y);
-    };
-    strokeStem(rightPath, 8);
-
-    // --- Bunga Lily di ujung tiga tangkai ---
-    drawLilyFlower(leftEnd.x,  leftEnd.y,  1.05);
-    drawLilyFlower(midEnd.x,   midEnd.y,   1.2);
-    drawLilyFlower(rightEnd.x, rightEnd.y, 1.05);
-
-    // --- Rumput kecil di bawah (opsional) ---
-    ctx.save();
-    ctx.translate(0, 0);
-    ctx.strokeStyle = '#1f8a52';
-    ctx.lineWidth = 2;
-    for(let i=0;i<8;i++){
-      const ox = -40 + i*10 + Math.sin((i*1.3)+Date.now()/800)*2;
-      ctx.beginPath();
-      ctx.moveTo(ox, 0);
-      ctx.quadraticCurveTo(ox-4, -12, ox-2, -22);
-      ctx.stroke();
+    // Kunang-kunang
+    for (let i = 0; i < 15; i++) {
+        let f = document.createElement("div");
+        f.className = "firefly";
+        f.style.top = Math.random() * window.innerHeight + "px";
+        f.style.left = Math.random() * window.innerWidth + "px";
+        document.body.appendChild(f);
     }
-    ctx.restore();
-
-    ctx.restore();
-  }
-
-  // Kelopak lily lebar + animasi "dihingus angin", serbuk sari kuning-oranye
-  function drawLilyFlower(x,y,scale=1){
-    ctx.save();
-    ctx.translate(x,y);
-    ctx.scale(scale,scale);
-
-    const t = performance.now()/1000;
-    const sway = Math.sin(t*0.9 + x*0.01)*0.08; // goyang pelan
-    ctx.rotate(sway);
-
-    // bayangan lembut belakang
-    const glow = ctx.createRadialGradient(0,-6, 0, 0,-6, 46);
-    glow.addColorStop(0,'rgba(255,255,255,.15)');
-    glow.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle = glow;
-    ctx.beginPath(); ctx.arc(0,-6,46,0,Math.PI*2); ctx.fill();
-
-    // Kelopak (6 helai) bentuk lily – lebar di tengah, meruncing di ujung, sedikit melengkung
-    for(let i=0;i<6;i++){
-      ctx.save();
-      ctx.rotate((Math.PI*2/6)*i);
-      ctx.scale(1, 1.05 + 0.02*Math.sin(t*1.2+i)); // nafas halus
-
-      const grad = ctx.createLinearGradient(0,0,0,-82);
-      grad.addColorStop(0,'#ffffff');
-      grad.addColorStop(0.6,'#ffffff');
-      grad.addColorStop(1,'#f3f6ff');
-
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      // sisi kiri
-      ctx.bezierCurveTo(-12,-10, -26,-34, -10,-64);
-      ctx.bezierCurveTo(-1,-80,  0,-86,   0,-88);
-      // sisi kanan
-      ctx.bezierCurveTo( 0,-86,  1,-80,   10,-64);
-      ctx.bezierCurveTo( 26,-34, 12,-10,   0,0);
-      ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.shadowColor = '#fff';
-      ctx.shadowBlur = 12;
-      ctx.fill();
-
-      // garis tekstur halus kelopak
-      ctx.shadowBlur = 0;
-      ctx.globalAlpha = .35;
-      ctx.strokeStyle = '#dde7ff';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0,-70);
-      ctx.quadraticCurveTo(6,-40, 0,-8);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-
-      ctx.restore();
-    }
-
-    // Putik & serbuk sari (stamen) – 6 filamen tipis dengan kepala sari oranye
-    for(let i=0;i<6;i++){
-      const ang = i*(Math.PI*2/6) + 0.2*Math.sin(t*0.9+i);
-      const len = 26 + (i%2?2:-2);
-      const tipx = Math.cos(ang)*len;
-      const tipy = Math.sin(ang)*len - 6;
-
-      // filamen
-      ctx.beginPath();
-      ctx.moveTo(0,-4);
-      ctx.quadraticCurveTo(Math.cos(ang)*10, Math.sin(ang)*10-6, tipx, tipy);
-      ctx.strokeStyle = '#d7e8d7';
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-
-      // kepala sari
-      ctx.beginPath();
-      ctx.ellipse(tipx, tipy, 4.5, 2.5, ang, 0, Math.PI*2);
-      const anther = ctx.createLinearGradient(tipx-3,tipy-2, tipx+3,tipy+2);
-      anther.addColorStop(0,'#ff9e00');
-      anther.addColorStop(1,'#ffcf33');
-      ctx.fillStyle = anther;
-      ctx.shadowColor = '#ffd26a';
-      ctx.shadowBlur = 6;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-
-    // pusat bunga kecil
-    ctx.beginPath();
-    ctx.arc(0,-4,3.2,0,Math.PI*2);
-    ctx.fillStyle = '#ffdb70';
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function animate(){
-    ctx.clearRect(0,0,innerWidth,innerHeight);
-    drawStars();
-    drawFireflies();
-
-    // Skala bouquet disesuaikan layar, aman di HP
-    const W = innerWidth, H = innerHeight;
-    const baseScale = Math.min(W, H) / 700; // responsif
-    drawLilyBouquet(W*0.5, H*0.92, Math.max(0.8, baseScale*1.2));
-
-    requestAnimationFrame(animate);
-  }
-  animate();
-
-  // ====== AUDIO CONTROL (opsional) ======
-  const audio = document.getElementById('bgm');
-  const btn = document.getElementById('muteBtn');
-  function updateBtn(){
-    btn.textContent = audio.muted ? '🔇' : '🔊';
-  }
-  btn.addEventListener('click',()=>{
-    audio.muted = !audio.muted;
-    updateBtn();
-  });
-  updateBtn();
-})();
 </script>
+
 </body>
 </html>
-
-
